@@ -1,0 +1,30 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin-bottom: 64px;
+}
+
+.boxBtn {
+  display: flex;
+  justify-content: center;
+}
+
+.btn {
+  border-radius: 12px;
+  padding: 16px;
+  width: 183px;
+  height: 60px;
+  background-color: #f4c550;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.55556;
+  color: #121417;
+  border: none;
+  transition: all 250ms linear;
+}
+
+.btn:hover,
+btn:focus {
+  background-color: #fbe9ba;
+}

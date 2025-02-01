@@ -1,0 +1,91 @@
+.section {
+  padding-bottom: 32px;
+}
+
+.box {
+  width: 1312px;
+  display: flex;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.boxText {
+  width: 720px;
+  height: 530px;
+  border-radius: 30px;
+  background-color: #f8f8f8;
+  padding: 98px 104px 98px 64px;
+}
+
+.title {
+  width: 548px;
+  font-size: 48px;
+  line-height: 1.16667;
+  letter-spacing: -0.02em;
+  color: #121417;
+  margin-bottom: 32px;
+}
+
+.spanTitle {
+  font-style: italic;
+  font-weight: 400;
+  background-color: #fbe9ba;
+}
+
+.text {
+  width: 471px;
+  font-weight: 400;
+  line-height: 1.375;
+  letter-spacing: -0.02em;
+  color: #121417;
+  margin-bottom: 64px;
+}
+
+.link {
+  border-radius: 12px;
+  padding: 16px 88px;
+  max-width: 267px;
+  height: 60px;
+  background-color: #f4c550;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.56;
+  color: #121417;
+  transition: all 250ms linear;
+}
+
+.link:hover,
+link:focus {
+  background-color: #fbe9ba;
+}
+
+.boxImg {
+  width: 568px;
+}
+
+.listInfo {
+  display: flex;
+  align-items: center;
+  border: 1.5px dashed #f4c550;
+  border-radius: 30px;
+  padding: 40px 122px;
+  gap: 100px;
+}
+
+.itemInfo {
+  font-size: 28px;
+  line-height: 1.14286;
+  letter-spacing: -0.02em;
+  color: #121417;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.textInfo {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.28571;
+  letter-spacing: -0.02em;
+  color: rgba(18, 20, 23, 0.7);
+}

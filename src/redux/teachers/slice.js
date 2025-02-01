@@ -1,86 +1,41 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import {
-  getDatabase,
-  ref,
-  get,
-  query,
-  orderByChild,
-  limitToFirst,
-  startAfter,
-} from "firebase/database";
+import { createSlice } from "@reduxjs/toolkit";
+import { fetchTeachers } from "./operations";
 
-// Async thunk для отримання викладачів
-export const fetchTeachers = createAsyncThunk(
-  "teachers/fetchTeachers",
-  async ({ page = 1, limit = 4, lastKey = null }, { rejectWithValue }) => {
-    try {
-      const db = getDatabase();
-      let teachersQuery = query(
-        ref(db, "teachers"),
-        orderByChild("name"),
-        limitToFirst(limit)
-      );
-      if (lastKey) {
-        teachersQuery = query(
-          ref(db, "teachers"),
-          orderByChild("name"),
-          startAfter(lastKey),
-          limitToFirst(limit)
-        );
-      }
-      const snapshot = await get(teachersQuery);
-      if (!snapshot.exists()) {
-        return { data: [], lastKey: null };
-      }
-      const data = snapshot.val();
-      const teachers = Object.values(data);
-      const newLastKey = teachers.length
-        ? teachers[teachers.length - 1].name
-        : null;
-      return { data: teachers, lastKey: newLastKey };
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
-  }
-);
+const INITIAL_STATE = {
+  items: [],
+  lastVisible: null,
+  loading: false,
+  error: null,
+};
 
 const teachersSlice = createSlice({
   name: "teachers",
-  initialState: {
-    teachers: [],
-    lastKey: null,
-    status: "idle",
-    error: null,
-    filters: {
-      language: "",
-      level: "",
-      priceRange: [0, 100],
-    },
-  },
+  initialState: INITIAL_STATE,
   reducers: {
-    setFilters: (state, action) => {
-      state.filters = { ...state.filters, ...action.payload };
-    },
-    resetFilters: (state) => {
-      state.filters = { language: "", level: "", priceRange: [0, 100] };
+    resetTeachers: (state) => {
+      state.items = [];
+      state.lastVisible = null;
+      state.error = null;
     },
   },
+
   extraReducers: (builder) => {
     builder
       .addCase(fetchTeachers.pending, (state) => {
-        state.status = "loading";
+        state.loading = true;
+        state.error = null;
       })
-      .addCase(fetchTeachers.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.teachers = [...state.teachers, ...action.payload.data];
-        state.lastKey = action.payload.lastKey;
+      .addCase(fetchTeachers.fulfilled, (state, { payload }) => {
+        state.items = [...state.items, ...payload.teachers];
+        state.lastVisible = payload.lastVisible;
+        state.loading = false;
       })
-      .addCase(fetchTeachers.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload;
+      .addCase(fetchTeachers.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload;
       });
   },
 });
 
-export const { setFilters, resetFilters } = teachersSlice.actions;
-export default teachersSlice.reducer;
+export const { resetTeachers } = teachersSlice.actions;
+export const teachersReducer = teachersSlice.reducer;

@@ -1,0 +1,109 @@
+.header {
+  display: flex;
+  width: 1184px;
+  margin: 0 auto;
+  padding: 20px 0;
+  background-color: #fff;
+  justify-content: space-between;
+}
+
+.headerContainer {
+  display: flex;
+  width: 1184px;
+  margin: 0 auto;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.imgLogo {
+  width: 28px;
+  height: 28px;
+}
+
+.logoText {
+  font-size: 20px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: #121417;
+}
+
+.nav {
+  display: flex;
+  gap: 28px;
+}
+
+.link {
+  font-weight: 400;
+  line-height: 1.25;
+  color: #121417;
+  padding: 14px 0;
+}
+
+.active {
+  color: #f4c550;
+}
+
+.boxBtn {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.btnLogin {
+  font-weight: 700;
+  line-height: 1.25;
+  color: #121417;
+  display: flex;
+  justify-content: center;
+  border: none;
+  background-color: inherit;
+  gap: 8px;
+  transition: all 250ms linear;
+}
+
+.btnLogin:hover,
+.btnLogin:focus {
+  color: #f4c550;
+}
+
+.svg {
+  stroke: #f4c550;
+  fill: #f4c550;
+}
+
+.btnRegister {
+  border-radius: 12px;
+  padding: 14px 39px;
+  width: 166px;
+  height: 48px;
+  background-color: #121417;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #fff;
+  border: none;
+  transition: all 250ms linear;
+}
+
+.btnRegister:hover,
+.btnRegister:focus {
+  background-color: #fff;
+  color: #121417;
+  border: 1px solid #121417;
+}
+
+.textEmail {
+  font-weight: 400;
+  line-height: 1.25;
+  color: #121417;
+}
+
+.textEmailSpan {
+  font-weight: 700;
+  line-height: 1.25;
+  color: #121417;
+}
