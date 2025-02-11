@@ -37,7 +37,7 @@ LearnLingo is a web application designed to connect students with online languag
 ## Firebase Database Structure
 
 - **Teachers Collection**:
-  - Fields: name, surname, languages, levels, rating, reviews, price_per_hour, lessons_done, avatar_url, lesson_info, conditions, experience.
+  - Fields: name, surname, languages, levels, rating, reviews, price_per_hour, lessons_done, lesson_info, conditions, experience.
 
 ## Implementation Details
 
@@ -52,9 +52,9 @@ LearnLingo is a web application designed to connect students with online languag
 2.  Install dependencies: `npm install`
 3.  Run the development server: `npm start`
 
-## Deployment
+## Deployment on Vercel
 
-The project is deployed on [GitHub Pages/Netlify/other hosting platform].
+The project is deployed on https://learn-lingo-rho.vercel.app/
 
 ## Contact
 
