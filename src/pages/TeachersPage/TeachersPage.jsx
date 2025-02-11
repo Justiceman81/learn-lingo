@@ -4,10 +4,12 @@ import styles from "./TeachersPage.module.css";
 
 const TeachersPage = () => {
   return (
-    <div className={styles.box}>
-      <TeachersForm />
-      <TeachersList />
-    </div>
+    <>
+      <div className={styles.teacherContainer}>
+        <TeachersForm />
+        <TeachersList />
+      </div>
+    </>
   );
 };
 

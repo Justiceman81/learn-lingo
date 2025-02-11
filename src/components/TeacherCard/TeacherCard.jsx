@@ -1,21 +1,23 @@
 import clsx from "clsx";
 import sprite from "../../assets/icons/sprite.svg";
-
+import toast from "react-hot-toast";
 import { useState } from "react";
-
+import { useAuth } from "../../redux/auth/auth";
 import styles from "./TeacherCard.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { closeModal, openModal } from "../../redux/modal/slice.js";
-
+import { toggleLike } from "../../redux/auth/slice.js";
 import {
   selectIsOpenModal,
   selectModalType,
-} from "../../redux/modal/selectors";
-import BookTrialForm from "../BookTrialForm/BookTrialForm.jsx";
+} from "../../redux/modal/selectors.js";
+import { selectUserLikes } from "../../redux/auth/selectors.js";
+import BookTrialModal from "../BookTrialModal/BookTrialModal.jsx";
 
 const TeacherCard = ({ teacher }) => {
-  console.log("Teacher data:", teacher);
   const dispatch = useDispatch();
+
+  const { isAuth } = useAuth();
 
   const isOpenModal = useSelector(selectIsOpenModal);
   const modalType = useSelector(selectModalType);
@@ -23,11 +25,27 @@ const TeacherCard = ({ teacher }) => {
   const [readLoad, setReadLoad] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState(null);
 
+  const likes = useSelector(selectUserLikes);
+
+  const isLike = likes && likes.includes(teacher.id);
+
+  const handleFavoriteClick = () => {
+    if (!isAuth) {
+      toast.error("This feature is available only for authenticated users.");
+      return;
+    }
+    dispatch(toggleLike(teacher.id));
+  };
+
   const handleReadMoreClick = () => {
     setReadLoad(!readLoad);
   };
 
   const isOpenModalBook = () => {
+    if (!isAuth) {
+      toast.error("Please log in first to book a trial lesson.");
+      return;
+    }
     setSelectedTeacher(teacher);
     dispatch(openModal("book"));
   };
@@ -39,7 +57,9 @@ const TeacherCard = ({ teacher }) => {
 
   return (
     <>
-      <div className={clsx(styles.boxTeacher, readLoad ? "css.readLoad" : "")}>
+      <div
+        className={clsx(styles.boxTeacher, readLoad ? "styles.readLoad" : "")}
+      >
         <div className={styles.boxImg}>
           <img
             className={styles.img}
@@ -91,7 +111,12 @@ const TeacherCard = ({ teacher }) => {
                   </p>
                 </li>
               </ul>
-              <svg className={styles.svg} width={26} height={26}>
+              <svg
+                className={clsx(`${styles.svg} ${isLike ? styles.like : ""}`)}
+                width={26}
+                height={26}
+                onClick={handleFavoriteClick}
+              >
                 <use href={`${sprite}#icon-heart`}></use>
               </svg>
             </div>
@@ -126,7 +151,7 @@ const TeacherCard = ({ teacher }) => {
               <ul className={styles.listLevel}>
                 {teacher.levels.map((level, index) => (
                   <li className={styles.itemLevel} key={index}>
-                    {level}
+                    #{level}
                   </li>
                 ))}
               </ul>
@@ -158,7 +183,7 @@ const TeacherCard = ({ teacher }) => {
               <ul className={styles.listLevel}>
                 {teacher.levels.map((level, index) => (
                   <li className={styles.itemLevel} key={index}>
-                    {level}
+                    #{level}
                   </li>
                 ))}
               </ul>
@@ -173,7 +198,7 @@ const TeacherCard = ({ teacher }) => {
           )}
         </div>
         {isOpenModal && modalType === "book" && (
-          <BookTrialForm
+          <BookTrialModal
             teacher={selectedTeacher}
             onCloseModal={onCloseModal}
           />

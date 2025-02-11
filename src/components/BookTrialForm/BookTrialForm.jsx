@@ -1,11 +1,13 @@
 import { FormProvider, useForm } from "react-hook-form";
-import styles from "./BookTrialForm.module.css";
-import InputType from "../InputType/InputType.jsx";
+import { useDispatch } from "react-redux";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import styles from "./BookTrialForm.module.css";
+import InputType from "../InputType/InputType.jsx";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
 import { closeModal } from "../../redux/modal/slice.js";
+
+const phoneRegExp = /^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$/;
 
 const validateSchemaBook = yup.object().shape({
   fullName: yup.string().required("Full Name is required"),
@@ -17,10 +19,7 @@ const validateSchemaBook = yup.object().shape({
   phoneNumber: yup
     .string()
     .required("Phone number is required")
-    .matches(
-      /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/,
-      "Phone number is not valid"
-    ),
+    .matches(phoneRegExp, "Phone number must be in the format 'xxx-xxx-xx-xx'"),
 });
 
 const BookTrialForm = () => {
@@ -43,7 +42,7 @@ const BookTrialForm = () => {
     reset();
   };
 
-  const radioValue = [
+  const inputValue = [
     { value: "careerAndBusiness", name: "Career and business" },
     { value: "lessonForKids", name: "Lesson for kids" },
     { value: "livingAbroad", name: "Living abroad" },
@@ -56,7 +55,7 @@ const BookTrialForm = () => {
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className={styles.boxBookForm}>
-            <InputType options={radioValue} />
+            <InputType options={inputValue} />
           </div>
           <div className={styles.boxInput}>
             <input

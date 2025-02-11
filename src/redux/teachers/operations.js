@@ -1,52 +1,39 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import {
-  get,
-  query,
-  ref,
-  orderByKey,
-  limitToFirst,
-  startAfter,
-} from "firebase/database";
-import { dbRealtime } from "../../services/firebase";
+import axios from "axios";
+import { getFilteredTeachers } from "../../services/filters.js";
 
-export const fetchTeachers = createAsyncThunk(
-  "teachers/fetchAll",
-  async ({ startAfterId = null, limit = 4 }, thunkApi) => {
+export const instance = axios.create({
+  baseURL:
+    "https://learnlingo-e01dd-default-rtdb.europe-west1.firebasedatabase.app",
+});
+
+export const getTeachers = createAsyncThunk(
+  "teachers/getAll",
+  async ({ startAfter, limit = 4, filters }, thunkApi) => {
     try {
-      let teachersQuery = query(
-        ref(dbRealtime, "teachers"),
-        orderByKey(),
-        limitToFirst(limit + 1)
-      );
+      let teachers = [];
+      const filteredTeachers = await getFilteredTeachers(filters);
 
-      if (startAfterId) {
-        teachersQuery = query(
-          ref(dbRealtime, "teachers"),
-          orderByKey(),
-          startAfter(startAfterId),
-          limitToFirst(limit + 1)
-        );
+      if (filteredTeachers.length === 0) {
+        const response = await instance.get("/teachers.json");
+        teachers = Object.values(response.data || {});
+      } else {
+        teachers = filteredTeachers;
       }
 
-      const snapshot = await get(teachersQuery);
-      if (!snapshot.exists()) {
-        return { teachers: [], lastVisible: null };
-      }
+      const startIndex = startAfter
+        ? teachers.findIndex((teacher) => teacher.id === startAfter) + 1
+        : 0;
+      const paginatedTeachers = teachers.slice(startIndex, startIndex + limit);
 
-      const teachersData = snapshot.val();
+      const hasNextPage = startIndex + limit < teachers.length;
 
-      const teachersArray = Object.keys(teachersData).map((key) => ({
-        id: key,
-        ...teachersData[key],
-      }));
-
-      const paginatedTeachers = teachersArray.slice(0, limit);
-      const lastVisible =
-        teachersArray.length > limit ? teachersArray[limit].id : null;
-
-      return { teachers: paginatedTeachers, lastVisible };
+      return {
+        teachers: paginatedTeachers,
+        lastVisible: paginatedTeachers[paginatedTeachers.length - 1]?.id,
+        hasNextPage,
+      };
     } catch (error) {
-      console.error("Error fetching teachers:", error);
       return thunkApi.rejectWithValue(error.message);
     }
   }

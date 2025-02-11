@@ -1,0 +1,13 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  gap: 32px;
+}
+
+.text {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 800;
+}

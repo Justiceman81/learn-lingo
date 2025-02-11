@@ -1,61 +1,69 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { registerUser, loginUser, logoutUser } from "./operations";
+import { getDatabase, ref, set } from "firebase/database";
 
-const initialState = {
-  email: null,
-  token: null,
-  id: null,
-  isLoading: false,
-  error: null,
+const savedUser = JSON.parse(localStorage.getItem("user"));
+
+const INITIAL_USER_STATE = {
+  email: savedUser?.email || null,
+  token: savedUser?.token || null,
+  id: savedUser?.id || null,
+  likes: savedUser?.likes || [],
 };
 
-const authSlice = createSlice({
-  name: "auth",
-  initialState,
+const userSlice = createSlice({
+  name: "user",
+  initialState: INITIAL_USER_STATE,
   reducers: {
-    setUser: (state, action) => {
+    setUser(state, action) {
       state.email = action.payload.email;
       state.token = action.payload.token;
       state.id = action.payload.id;
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          email: state.email,
+          token: state.token,
+          id: state.id,
+          likes: state.likes,
+        })
+      );
     },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(registerUser.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(registerUser.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.email = action.payload.email;
-        state.token = action.payload.token;
-        state.id = action.payload.id;
-      })
-      .addCase(registerUser.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload;
-      })
-      .addCase(loginUser.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(loginUser.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.email = action.payload.email;
-        state.token = action.payload.token;
-        state.id = action.payload.id;
-      })
-      .addCase(loginUser.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload;
-      })
-      .addCase(logoutUser.fulfilled, (state) => {
-        state.email = null;
-        state.token = null;
-        state.id = null;
-      });
+    removeUser(state) {
+      state.email = null;
+      state.token = null;
+      state.id = null;
+      state.likes = [];
+      localStorage.removeItem("user");
+    },
+    toggleLike(state, action) {
+      if (!state.token) {
+        return;
+      }
+      const teacherId = action.payload;
+      const isLiked = state.likes.includes(teacherId);
+      const newLikes = isLiked
+        ? state.likes.filter((id) => id !== teacherId)
+        : [...state.likes, teacherId];
+
+      state.likes = newLikes;
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          email: state.email,
+          token: state.token,
+          id: state.id,
+          likes: state.likes,
+        })
+      );
+
+      const db = getDatabase();
+      const userRef = ref(db, `users/${state.id}/favorites`);
+      set(userRef, newLikes)
+        .then(() => console.log("Favorites updated in Firebase:", newLikes))
+        .catch((error) => console.error("Firebase update error:", error));
+    },
   },
 });
 
-export const { setUser } = authSlice.actions;
-export const authReducer = authSlice.reducer;
+export const { setUser, removeUser, toggleLike } = userSlice.actions;
+export const userReducer = userSlice.reducer;

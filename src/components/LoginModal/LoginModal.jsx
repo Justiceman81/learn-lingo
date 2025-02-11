@@ -1,16 +1,31 @@
+import { useDispatch, useSelector } from "react-redux";
+import { closeModal } from "../../redux/modal/slice.js";
+import { selectIsOpenModal } from "../../redux/modal/selectors.js";
+import Modal from "../Modal/Modal.jsx";
+import LoginForm from "../LoginForm/LoginForm.jsx";
 import styles from "./LoginModal.module.css";
 
-const LoginModal = ({ onClose }) => {
+const LoginModal = () => {
+  const dispatch = useDispatch();
+
+  const isOpenModal = useSelector(selectIsOpenModal);
+
+  const onCloseModal = () => {
+    dispatch(closeModal());
+  };
   return (
-    <div className={styles.modal}>
-      <div className={styles.modalContent}>
-        <h2>Login</h2>
-        <p>Enter your credentials to log in.</p>
-        <button className={styles.closeBtn} onClick={onClose}>
-          Close
-        </button>
-      </div>
-    </div>
+    <>
+      {isOpenModal && (
+        <Modal onCloseModal={onCloseModal} width={566}>
+          <h1 className={styles.title}>Log In</h1>
+          <p className={styles.text}>
+            Welcome back! Please enter your credentials to access your account
+            and continue your search for an teacher.
+          </p>
+          <LoginForm />
+        </Modal>
+      )}
+    </>
   );
 };
 

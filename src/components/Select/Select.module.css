@@ -1,0 +1,39 @@
+.boxSelect {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.select {
+  border-radius: 14px;
+  border: inherit;
+  padding: 14px 18px;
+  height: 48px;
+  font-weight: 500;
+  background-color: #fff;
+  font-size: 18px;
+  line-height: 1.11;  
+  color: #121417;
+  outline: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.option {
+  display: inline-block;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1.11;
+  color: rgba(18, 20, 23, 0.2);
+  box-shadow: none;
+  background-color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.selectedOption {
+  background-color: #fff;
+  color: #121417;
+}

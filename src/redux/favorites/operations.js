@@ -1,59 +1,70 @@
+import { onAuthStateChanged, getAuth } from "firebase/auth";
+import { onValue, ref, set, remove } from "firebase/database";
+import { dbRealtime } from "../../services/firebase";
+import { setFavorites } from "./slice";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { getDatabase, ref, update, remove, get } from "firebase/database";
-import { auth } from "../../services/firebase";
 
-export const addToFavoritesDB = createAsyncThunk(
-  "favorites/addToFavoritesDB",
+const auth = getAuth();
+
+export const subscribeToFavorites = () => (dispatch) => {
+  return new Promise((resolve) => {
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+      if (!user) return;
+
+      const favoritesRef = ref(dbRealtime, `users/${user.uid}/favorites`);
+
+      const unsubscribeFavorites = onValue(
+        favoritesRef,
+        (snapshot) => {
+          const data = snapshot.val();
+          const favoritesArray = data ? Object.values(data) : [];
+          dispatch(setFavorites(favoritesArray));
+        },
+        (error) => console.error("Error fetching favorites:", error)
+      );
+
+      resolve(() => {
+        unsubscribeAuth();
+        unsubscribeFavorites();
+      });
+    });
+  });
+};
+
+export const addFavorite = createAsyncThunk(
+  "favorites/addFavorite",
   async (teacher, { rejectWithValue }) => {
     try {
-      const user = auth.currentUser;
-      if (!user) throw new Error("User not authenticated");
+      return new Promise((resolve, reject) => {
+        onAuthStateChanged(auth, async (user) => {
+          if (!user)
+            return reject(rejectWithValue("User is not authenticated"));
 
-      if (!teacher?.id) throw new Error("Invalid teacher data");
-
-      const db = getDatabase();
-      const favRef = ref(db, `users/${user.uid}/favorites/${teacher.id}`);
-      await update(favRef, teacher);
-
-      return teacher;
+          const favRef = ref(dbRealtime, `favorites/${user.uid}/${teacher.id}`);
+          await set(favRef, teacher);
+          resolve();
+        });
+      });
     } catch (error) {
       return rejectWithValue(error.message);
     }
   }
 );
 
-export const removeFromFavoritesDB = createAsyncThunk(
-  "favorites/removeFromFavoritesDB",
+export const removeFavorite = createAsyncThunk(
+  "favorites/removeFavorite",
   async (teacherId, { rejectWithValue }) => {
     try {
-      const user = auth.currentUser;
-      if (!user) throw new Error("User not authenticated");
+      return new Promise((resolve, reject) => {
+        onAuthStateChanged(auth, async (user) => {
+          if (!user)
+            return reject(rejectWithValue("User is not authenticated"));
 
-      if (!teacherId) throw new Error("Invalid teacher ID");
-
-      const db = getDatabase();
-      const favRef = ref(db, `users/${user.uid}/favorites/${teacherId}`);
-      await remove(favRef);
-
-      return teacherId;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
-  }
-);
-
-export const fetchFavoritesDB = createAsyncThunk(
-  "favorites/fetchFavoritesDB",
-  async (_, { rejectWithValue }) => {
-    try {
-      const user = auth.currentUser;
-      if (!user) throw new Error("User not authenticated");
-
-      const db = getDatabase();
-      const favRef = ref(db, `users/${user.uid}/favorites`);
-      const snapshot = await get(favRef);
-
-      return snapshot.exists() ? Object.values(snapshot.val()) : [];
+          const favRef = ref(dbRealtime, `favorites/${user.uid}/${teacherId}`);
+          await remove(favRef);
+          resolve();
+        });
+      });
     } catch (error) {
       return rejectWithValue(error.message);
     }

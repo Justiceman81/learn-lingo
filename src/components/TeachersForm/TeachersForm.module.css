@@ -1,6 +1,6 @@
 .boxForm {
   margin-bottom: 32px;
-  display: inline-flex;
+  display: flex;
   gap: 20px;
 }
 

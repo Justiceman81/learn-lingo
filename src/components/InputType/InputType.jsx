@@ -1,7 +1,7 @@
 import { useFormContext } from "react-hook-form";
 import styles from "./InputType.module.css";
 
-const RadioInput = ({ options }) => {
+const InputType = ({ options }) => {
   const { register } = useFormContext();
   return (
     <>
@@ -17,4 +17,4 @@ const RadioInput = ({ options }) => {
   );
 };
 
-export default RadioInput;
+export default InputType;

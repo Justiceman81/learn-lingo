@@ -5,12 +5,9 @@ import { useDispatch } from "react-redux";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-} from "../../redux/auth/operations.js";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { setUser } from "../../redux/auth/slice.js";
-import { closeModal } from "../../redux/modal.js";
+import { closeModal } from "../../redux/modal/slice.js";
 
 import sprite from "../../assets/icons/sprite.svg";
 

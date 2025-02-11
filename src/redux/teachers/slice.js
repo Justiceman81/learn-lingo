@@ -1,41 +1,58 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchTeachers } from "./operations";
+import { getTeachers } from "../teachers/operations.js";
 
 const INITIAL_STATE = {
   items: [],
-  lastVisible: null,
   loading: false,
   error: null,
+  lastVisible: null,
+  filters: {
+    languages: null,
+    levels: null,
+    price_per_hour: null,
+  },
+  hasMore: true,
 };
 
 const teachersSlice = createSlice({
   name: "teachers",
   initialState: INITIAL_STATE,
   reducers: {
-    resetTeachers: (state) => {
+    setFilters: (state, action) => {
+      state.filters = action.payload;
+    },
+    setClear: (state) => {
       state.items = [];
       state.lastVisible = null;
-      state.error = null;
+      state.hasMore = true;
     },
   },
-
   extraReducers: (builder) => {
     builder
-      .addCase(fetchTeachers.pending, (state) => {
+      .addCase(getTeachers.pending, (state) => {
         state.loading = true;
+      })
+      .addCase(getTeachers.fulfilled, (state, action) => {
+        state.loading = false;
         state.error = null;
+        state.lastVisible = action.payload.lastVisible;
+
+        if (state.items.length === 0) {
+          state.items = action.payload.teachers;
+        } else {
+          const newTeachers = action.payload.teachers.filter(
+            (teacher) => !state.items.some((item) => item.id === teacher.id)
+          );
+          state.items = [...state.items, ...newTeachers];
+        }
+        state.hasMore = action.payload.hasNextPage;
       })
-      .addCase(fetchTeachers.fulfilled, (state, { payload }) => {
-        state.items = [...state.items, ...payload.teachers];
-        state.lastVisible = payload.lastVisible;
+      .addCase(getTeachers.rejected, (state, action) => {
         state.loading = false;
-      })
-      .addCase(fetchTeachers.rejected, (state, { payload }) => {
-        state.loading = false;
-        state.error = payload;
+        state.error = action.payload;
       });
   },
 });
 
-export const { resetTeachers } = teachersSlice.actions;
+export const { setFilters, setClear } = teachersSlice.actions;
 export const teachersReducer = teachersSlice.reducer;

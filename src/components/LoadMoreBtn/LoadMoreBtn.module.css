@@ -1,7 +1,7 @@
 .LoadBtn {
   border-radius: 12px;
-  padding: 16px 88px;
-  max-width: 267px;
+  padding: 16px 48px;
+  min-width: 183px;
   height: 60px;
   background-color: #f4c550;
   font-weight: 700;
@@ -9,6 +9,7 @@
   line-height: 1.56;
   color: #121417;
   transition: all 250ms linear;
+  border: none;
 }
 
 .LoadBtn:hover,

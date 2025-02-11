@@ -1,17 +1,11 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-} from "../../redux/auth/operations.js";
-
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-
-import { closeModal } from "../../redux/modal.js";
+import { closeModal } from "../../redux/modal/slice.js";
 import { setUser } from "../../redux/auth/slice.js";
-
 import sprite from "../../assets/icons/sprite.svg";
 
 import styles from "./RegisterForm.module.css";
