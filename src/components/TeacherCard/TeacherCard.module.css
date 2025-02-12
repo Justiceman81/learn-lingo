@@ -81,6 +81,19 @@
   fill: white;
 }
 
+.svgHeart {
+  stroke: #121417;
+  fill: white;
+  cursor: pointer;
+  transition: all 250ms linear;
+}
+
+.svgHeart:focus,
+.svgHeart:hover {
+  stroke: #f4c550;
+  fill: #f4c550;
+}
+
 .textInfo {
   color: #121417;
 }
@@ -213,4 +226,5 @@
 .like {
   stroke: #f4c550;
   fill: #f4c550;
+  cursor: pointer;
 }

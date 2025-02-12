@@ -6,14 +6,17 @@
 
 .selectLanguages {
   width: 221px;
+  cursor: pointer;
 }
 
 .selectLevels {
   width: 198px;
+  cursor: pointer;
 }
 
 .selectPrice {
   width: 124px;
+  cursor: pointer;
 }
 
 .boxBtn {

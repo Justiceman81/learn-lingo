@@ -112,7 +112,9 @@ const TeacherCard = ({ teacher }) => {
                 </li>
               </ul>
               <svg
-                className={clsx(`${styles.svg} ${isLike ? styles.like : ""}`)}
+                className={clsx(
+                  `${styles.svgHeart} ${isLike ? styles.like : ""}`
+                )}
                 width={26}
                 height={26}
                 onClick={handleFavoriteClick}
