@@ -26,7 +26,7 @@ const TeachersList = () => {
 
   useEffect(() => {
     dispatch({ type: "teachers/setClear" });
-    dispatch(getTeachers({ startAfter: 0, filters })).unwrap();
+    dispatch(getTeachers({ startAfter: 0, limit: 4, filters })).unwrap();
   }, [dispatch, filters]);
 
   const loadMore = () => {
